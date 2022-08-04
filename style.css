@@ -1,0 +1,18 @@
+* {
+    margin: 0;
+}
+
+.header {
+    height: 200px;
+}
+
+.btn-outline-primary {
+    position: absolute;
+    margin-top: 50px;
+    right: 20px;
+}
+
+.goods-list {
+    display: flex;
+    flex-wrap: wrap;
+}
