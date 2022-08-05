@@ -7,7 +7,7 @@ const goods = [
     {title: 'Squier', price: 25000, image: default_image},
 ];
 
-const renderGoodsItem = ({title, price, image}) => {
+const renderGoodsItem = ({title='Гитара', price='Дорого', image=default_image}) => {
     return `
     <div class="card" style="width: 18rem;">
     <img class="card-img-top" src="${image}" alt="Card image cap">
