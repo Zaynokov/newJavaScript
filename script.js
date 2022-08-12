@@ -1,16 +1,27 @@
-const default_image = 'https://musicmarket.by/images/thumbnails/460/460/detailed/1/523DC116BE9F9A99DC3A23E0B9835581_LRG.jpg.jpg'
-const goods = [
-    {title: 'Yamaha', price: 150000, image: default_image},
-    {title: 'Fender', price: 50000, image: default_image},
-    {title: 'Ibanez', price: 350000, image: default_image},
-    {title: 'Gibson', price: 250000, image: default_image},
-    {title: 'Squier', price: 25000, image: default_image},
-];
+const default_image = 'https://www.calltekky.com/wp-content/uploads/2019/06/Peripheral-Devices-Services.jpg'
+
+const BASE = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+const GOODS = '/catalogData.json';
+
+
+function service(url) {
+  return new Promise((resolve) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+
+    const loadHandler = () => {
+      resolve(JSON.parse(xhr.response))
+    }
+
+    xhr.onload = loadHandler;
+    xhr.send();
+  })
+}
 
 
 class GoodsItem {
-  constructor({title='Гитара', price=0, image=default_image}) {
-    this.title = title;
+  constructor({ product_name = 'Гитара', price = 0, image = default_image }) {
+    this.title = product_name;
     this.price = price;
     this.image = image;
   }
@@ -30,18 +41,23 @@ class GoodsItem {
 }
 
 class GoodsList {
+
   goods = [];
 
   fetchGoods() {
-    this.goods = goods;
+    return new Promise((resolve) => {
+      service(BASE + GOODS).then((data) => {
+        this.goods = data;
+        resolve();
+      })
+    })
   }
 
   totalPrice() {
-    let result = 0;
-    this.goods.forEach(item => {
-      result += item.price
-    })
-    document.querySelector('.total-price').innerHTML = 'Общая стоимость - ' + result
+    return this.goods.reduce((prev, { price }) => {
+      return prev + price
+    }, 0)
+
   }
 
   render() {
@@ -50,11 +66,12 @@ class GoodsList {
       return goodsItem.render();
     });
     document.querySelector('.goods-list').innerHTML = goodsList.join('');
+    document.querySelector('.total-price').innerHTML = `Общая стоимость - ${this.totalPrice()}`
   }
 }
 
 const goodsList = new GoodsList();
 
-goodsList.fetchGoods()
-goodsList.render()
-goodsList.totalPrice()
+goodsList.fetchGoods().then(() => {
+  goodsList.render()
+})
