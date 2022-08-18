@@ -45,12 +45,9 @@ class GoodsList {
   goods = [];
 
   fetchGoods() {
-    return new Promise((resolve) => {
-      service(BASE + GOODS).then((data) => {
+    return service(BASE + GOODS).then((data) => {
         this.goods = data;
-        resolve();
       })
-    })
   }
 
   totalPrice() {
