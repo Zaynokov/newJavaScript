@@ -3,18 +3,56 @@
 
 <head>
     <title>eShop</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
-    <div class="header">
-        <button type="button" class="btn btn-outline-primary">Корзина</button>
+
+    <div id="app">
+        <div class="header">
+            <h1 class="logo">Shop</h1>
+            <button type="button" class="btn btn-outline-primary" v-if="!isVisibleCart" @click="showBasket">Корзина</button>
+            <button type="button" class="btn btn-outline-primary" v-if="isVisibleCart" @click="showCatalog">Каталог</button>
+        </div>
+        <div class="search">
+            <input type="text" class="goods-search" v-model="search" />
+            <!-- <button class="search-button" type="button" v-on:click="filterItems">Искать</button> -->
+        </div>
+        <main class="main" v-if="!isVisibleCart">
+            <div class="search-line">Search: {{ search }}</div>
+            <div class="goods-list">
+                <div class="goods-item" v-for="item in items">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" :src="default_image" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.product_name }}</h5>
+                            <p class="card-text">Цена: {{item.price }}</p>
+                            <a href="#" class="btn btn-primary">В корзину</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="total-price"> Общая цена: {{ totalPrice(items) }}</div>
+        </main>
+        <div class="basket" v-if="isVisibleCart">
+            <div class="goods-list" v-if="!itemsInBasket.lenght == 0">
+                <div class="goods-item" v-for="item in itemsInBasket">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" :src="default_image" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ item.product_name }}</h5>
+                            <p class="card-text">Цена: {{item.price }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-else>Корзина пуста</div>
+            <div class="total-price"> Общая цена: {{ totalPrice(itemsInBasket) }}</div>
+        </div>
     </div>
-    <main>
-        <div class="goods-list"></div>
-        <div class="total-price"></div>
-    </main>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
     <script src="script.js"></script>
 </body>
 

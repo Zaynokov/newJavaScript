@@ -3,7 +3,25 @@
 }
 
 .header {
+    display: flex;
     height: 200px;
+}
+
+.logo {
+    padding: 30px;
+}
+
+.search {
+    margin-bottom: 50px;
+    padding-left: 20px;
+}
+
+.main {
+    padding: 20px;
+}
+
+.basket {
+    padding: 20px;
 }
 
 .btn-outline-primary {
@@ -15,4 +33,7 @@
 .goods-list {
     display: flex;
     flex-wrap: wrap;
+}
+.goods-list:last-child {
+    margin-top: auto;
 }
