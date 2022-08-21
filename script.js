@@ -1,22 +1,51 @@
-const default_image = 'https://www.calltekky.com/wp-content/uploads/2019/06/Peripheral-Devices-Services.jpg'
-
 const BASE = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
 const GOODS = '/catalogData.json';
 
-
 function service(url) {
-  return new Promise((resolve) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-
-    const loadHandler = () => {
-      resolve(JSON.parse(xhr.response))
-    }
-
-    xhr.onload = loadHandler;
-    xhr.send();
-  })
+  return fetch(url)
+    .then((res) => res.json())
 }
+
+const app = new Vue({
+  el: '#app',
+
+  data: {
+    items: [],
+    itemsInBasket: [],
+    default_image: 'https://www.calltekky.com/wp-content/uploads/2019/06/Peripheral-Devices-Services.jpg',
+    search: '',
+    isVisibleCart: false
+  },
+
+  methods: {
+    fetchGoods() {
+      return service(BASE + GOODS).then((data) => {
+        this.items = data;
+      })
+    },
+
+    showBasket() {
+      this.isVisibleCart = true;
+    },
+
+    showCatalog() {
+      this.isVisibleCart = false;
+    },
+
+    totalPrice(items) {
+      return items.reduce((prev, { price }) => {
+        return prev + price
+      }, 0)
+    }
+  },
+
+  mounted() {
+    this.fetchGoods();
+  }
+}
+)
+
+
 
 
 class GoodsItem {
@@ -46,15 +75,14 @@ class GoodsList {
 
   fetchGoods() {
     return service(BASE + GOODS).then((data) => {
-        this.goods = data;
-      })
+      this.goods = data;
+    })
   }
 
   totalPrice() {
     return this.goods.reduce((prev, { price }) => {
       return prev + price
     }, 0)
-
   }
 
   render() {
@@ -69,6 +97,6 @@ class GoodsList {
 
 const goodsList = new GoodsList();
 
-goodsList.fetchGoods().then(() => {
-  goodsList.render()
-})
+// goodsList.fetchGoods().then(() => {
+//   goodsList.render()
+// })
