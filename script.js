@@ -6,13 +6,70 @@ function service(url) {
     .then((res) => res.json())
 }
 
+Vue.component('custom-header', {
+  template: `
+  <div class="header">
+    <h1 class="logo">Shop</h1>
+    <slot></slot>
+  </div>
+  `
+})
+
+Vue.component('custom-input', {
+  props: ['value', 'placeholder'],
+  template: `
+    <input
+      v-bind:value="value"
+      v-bind:placeholder="placeholder"
+      v-on:input="$emit('input', $event.target.value)"
+    >
+  `
+})
+
+Vue.component('custom-button', {
+  template: `
+    <button class="btn btn-primary" v-on:click="$emit('click')">
+      <slot></slot>
+    </button>
+  `
+})
+
+Vue.component('card', {
+  props: ['item', 'image'],
+  template: `
+  <div class="card" style="width: 18rem;">
+    <img class="card-img-top" :src="image" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">{{ item.product_name }}</h5>
+      <p class="card-text">Цена: {{item.price }}</p>
+      <a href="#" class="btn btn-primary">В корзину</a>
+    </div>
+  </div>
+`
+})
+
+Vue.component('item-list', {
+  template: `
+    <div>
+      <slot></slot>
+    </div>
+  `
+})
+
+Vue.component('basket', {
+  template: `
+    <div>
+    </div>
+  `
+})
+
 const app = new Vue({
   el: '#app',
-
   data: {
     items: [],
+    filteredItems: [],
     itemsInBasket: [],
-    default_image: 'https://www.calltekky.com/wp-content/uploads/2019/06/Peripheral-Devices-Services.jpg',
+    image: 'https://www.calltekky.com/wp-content/uploads/2019/06/Peripheral-Devices-Services.jpg',
     search: '',
     isVisibleCart: false
   },
@@ -21,15 +78,18 @@ const app = new Vue({
     fetchGoods() {
       return service(BASE + GOODS).then((data) => {
         this.items = data;
+        this.filteredItems = data;
       })
     },
 
-    showBasket() {
-      this.isVisibleCart = true;
+    switchBasketCatalog() {
+      this.isVisibleCart = !this.isVisibleCart;
     },
 
-    showCatalog() {
-      this.isVisibleCart = false;
+    filterItems() {
+      this.filteredItems = this.items.filter(({ product_name }) => {
+        return product_name.match(new RegExp(this.search, 'gui'))
+      })
     },
 
     totalPrice(items) {
@@ -42,61 +102,4 @@ const app = new Vue({
   mounted() {
     this.fetchGoods();
   }
-}
-)
-
-
-
-
-class GoodsItem {
-  constructor({ product_name = 'Гитара', price = 0, image = default_image }) {
-    this.title = product_name;
-    this.price = price;
-    this.image = image;
-  }
-
-  render() {
-    return `
-    <div class="card" style="width: 18rem;">
-    <img class="card-img-top" src="${this.image}" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title">${this.title}</h5>
-      <p class="card-text">Цена: ${this.price}</p>
-      <a href="#" class="btn btn-primary">В корзину</a>
-    </div>
-  </div>
-    `;
-  }
-}
-
-class GoodsList {
-
-  goods = [];
-
-  fetchGoods() {
-    return service(BASE + GOODS).then((data) => {
-      this.goods = data;
-    })
-  }
-
-  totalPrice() {
-    return this.goods.reduce((prev, { price }) => {
-      return prev + price
-    }, 0)
-  }
-
-  render() {
-    let goodsList = this.goods.map((item) => {
-      const goodsItem = new GoodsItem(item);
-      return goodsItem.render();
-    });
-    document.querySelector('.goods-list').innerHTML = goodsList.join('');
-    document.querySelector('.total-price').innerHTML = `Общая стоимость - ${this.totalPrice()}`
-  }
-}
-
-const goodsList = new GoodsList();
-
-// goodsList.fetchGoods().then(() => {
-//   goodsList.render()
-// })
+})
