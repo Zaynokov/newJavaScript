@@ -12,13 +12,13 @@
 
     <div id="app">
         <custom-header>
-            <custom-button class="btn-outline-primary" v-on:click="switchBasketCatalog">
+            <custom-button class="btn-outline-primary" @click="switchBasketCatalog">
                 {{ isVisibleCart ? "Каталог" : "Корзина" }}
             </custom-button>
         </custom-header>
         <div class="search">
             <custom-input v-model="search" placeholder="Поиск по имени"></custom-input>
-            <custom-button v-on:click="filterItems">Поиск</custom-button>
+            <custom-button @click="filterItems">Поиск</custom-button>
         </div>
         <div v-if="!isVisibleCart">
             <div v-if="filteredItems.length">
@@ -31,7 +31,7 @@
             </div>
         </div>
         <div v-else>
-            <div v-if="itemsInBasket.length">
+            <!-- <div v-if="itemsInBasket.length">
                 <basket>
                     <item-list v-for="item in itemsInBasket" :key="item.id">
                         <card :item="item" :image="image"></card>
@@ -40,7 +40,10 @@
             </div>
             <div v-else>
                 Корзина пуста
-            </div>
+            </div> -->
+            <basket :image="image">
+                
+            </basket>
         </div>
     </div>
 
