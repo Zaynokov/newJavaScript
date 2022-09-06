@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>eShop</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div id="app">
+        <custom-header>
+            <custom-button class="btn-outline-primary" @click="switchBasketCatalog">
+                {{ isVisibleCart ? "Каталог" : "Корзина" }}
+            </custom-button>
+        </custom-header>
+        <div class="search">
+            <custom-input v-model="search" placeholder="Поиск по имени"></custom-input>
+            <custom-button @click="filterItems">Поиск</custom-button>
+        </div>
+        <div v-if="!isVisibleCart">
+            <div v-if="filteredItems.length">
+                <item-list v-for="item in filteredItems" :key="item.id">
+                    <card :item="item" :image="image"></card>
+                </item-list>
+            </div>
+            <div v-else>
+                По запросу ничего не найдено
+            </div>
+        </div>
+        <div v-else>
+            <!-- <div v-if="itemsInBasket.length">
+                <basket>
+                    <item-list v-for="item in itemsInBasket" :key="item.id">
+                        <card :item="item" :image="image"></card>
+                    </item-list>
+                </basket>
+            </div>
+            <div v-else>
+                Корзина пуста
+            </div> -->
+            <basket :image="image">
+                
+            </basket>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+
+</body>
+
+</html>
